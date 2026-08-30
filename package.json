@@ -1,0 +1,9 @@
+{
+  "name": "wedding-rsvp-server",
+  "version": "1.0.0",
+  "description": "RSVP backend for Mostafa & Soha wedding invitation, deployed on Vercel with MongoDB storage.",
+  "private": true,
+  "dependencies": {
+    "mongodb": "^6.10.0"
+  }
+}
