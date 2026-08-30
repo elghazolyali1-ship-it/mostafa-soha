@@ -5773,6 +5773,41 @@
                         .loc-detail-value { font-size: 15px; }
                     }
 
+                    .loc-note {
+                        margin-top: 14px;
+                        padding: 14px 18px;
+                        border: 1px dashed #c98a6b;
+                        border-radius: 6px;
+                        background: #fdf1e9;
+                        text-align: center;
+                        font-family: 'Amiri', serif;
+                        font-weight: 700;
+                        font-size: 15.5px;
+                        line-height: 1.8;
+                        color: #a34c3f;
+                        opacity: 0;
+                        transform: translateY(10px);
+                        transition: opacity 0.7s ease 0.7s, transform 0.7s ease 0.7s;
+                    }
+                    #loc-section.loc-inview .loc-note {
+                        opacity: 1;
+                        transform: translateY(0);
+                        animation: locNotePulse 2.2s ease-in-out 1.4s infinite;
+                    }
+                    @keyframes locNotePulse {
+                        0%, 100% {
+                            box-shadow: 0 0 0 0 rgba(163,76,63,0.22);
+                            border-color: #c98a6b;
+                        }
+                        50% {
+                            box-shadow: 0 0 0 8px rgba(163,76,63,0);
+                            border-color: #a34c3f;
+                        }
+                    }
+                    @media screen and (max-width: 479px) {
+                        .loc-note { font-size: 14px; padding: 12px 14px; }
+                    }
+
 
                     .rsvp-card {
                         max-width: 480px;
@@ -5970,6 +6005,8 @@
                             <span class="loc-detail-value">من الساعة ١٠ مساءً حتى الساعة ١ صباحًا</span>
                         </span>
                     </div>
+
+                    <div class="loc-note">⏰ برجاء الحضور قبل المعاد بنصف ساعة لتحرك المركب في تمام الساعة العاشرة</div>
                 </div>
 
                 <div class="rsvp-card" id="rsvp-card">
