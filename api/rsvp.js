@@ -40,11 +40,12 @@ module.exports = async function handler(req, res) {
       }
 
       const name = sanitizeString(body.name, 120);
+      const familyName = sanitizeString(body.familyName, 120);
       const attending = body.attending === 'yes' ? 'yes' : (body.attending === 'no' ? 'no' : '');
       const countRaw = parseInt(body.count, 10);
       const count = Number.isFinite(countRaw) ? Math.min(Math.max(countRaw, 1), 20) : 1;
 
-      if (!name || !attending) {
+      if (!name || !familyName || !attending) {
         res.statusCode = 400;
         return res.end(JSON.stringify({ ok: false, error: 'برجاء تعبئة جميع الحقول المطلوبة.' }));
       }
@@ -52,6 +53,7 @@ module.exports = async function handler(req, res) {
       const db = await getDb();
       const doc = {
         name,
+        familyName,
         count,
         attending,
         createdAt: new Date(),

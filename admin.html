@@ -303,6 +303,7 @@
                 <thead>
                     <tr>
                         <th>الاسم</th>
+                        <th>اسم العائلة</th>
                         <th>عدد الأشخاص</th>
                         <th>الحضور</th>
                         <th>تاريخ الرد</th>
@@ -435,6 +436,7 @@
                 : '<span class="badge no"><span class="dot"></span> معتذر</span>';
             return '<tr>' +
                 '<td data-label="الاسم">' + escapeHtml(r.name) + '</td>' +
+                '<td data-label="اسم العائلة">' + escapeHtml(r.familyName) + '</td>' +
                 '<td data-label="عدد الأشخاص">' + escapeHtml(r.count) + '</td>' +
                 '<td data-label="الحضور">' + badge + '</td>' +
                 '<td data-label="تاريخ الرد">' + escapeHtml(formatDate(r.createdAt)) + '</td>' +
@@ -447,11 +449,11 @@
 
     exportBtn.addEventListener('click', function() {
         var rows = getFiltered();
-        var header = ['الاسم', 'عدد الأشخاص', 'الحضور', 'تاريخ الرد'];
+        var header = ['الاسم', 'اسم العائلة', 'عدد الأشخاص', 'الحضور', 'تاريخ الرد'];
         var lines = [header.join(',')];
         rows.forEach(function(r) {
             var attending = r.attending === 'yes' ? 'حاضر' : 'معتذر';
-            var line = [r.name, r.count, attending, formatDate(r.createdAt)]
+            var line = [r.name, r.familyName, r.count, attending, formatDate(r.createdAt)]
                 .map(function(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; })
                 .join(',');
             lines.push(line);
