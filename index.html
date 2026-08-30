@@ -6030,8 +6030,39 @@
                         var msg = document.getElementById('rsvp-message');
                         var successBox = document.getElementById('rsvp-success');
                         if (!form) return;
+
+                        var RSVP_DONE_KEY = 'wedding_rsvp_submitted';
+
+                        // If this device/browser already RSVP'd before, show the success
+                        // state immediately and don't show the form again.
+                        function alreadySubmitted() {
+                            try {
+                                return localStorage.getItem(RSVP_DONE_KEY) === '1';
+                            } catch (e) {
+                                return false;
+                            }
+                        }
+
+                        function markSubmitted() {
+                            try {
+                                localStorage.setItem(RSVP_DONE_KEY, '1');
+                            } catch (e) {
+                                /* ignore (e.g. private browsing) */
+                            }
+                        }
+
+                        if (alreadySubmitted()) {
+                            form.style.display = 'none';
+                            if (successBox) successBox.classList.add('show');
+                            return;
+                        }
+
                         form.addEventListener('submit', function(e) {
                             e.preventDefault();
+
+                            // Extra guard in case of a double-tap/double-submit race.
+                            if (alreadySubmitted() || submitBtn.disabled) return;
+
                             var name = document.getElementById('rsvp-name').value.trim();
                             var familyName = document.getElementById('rsvp-family-name').value.trim();
                             var count = document.getElementById('rsvp-count').value;
@@ -6047,13 +6078,30 @@
                             fetch('/api/rsvp', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
+                                credentials: 'same-origin',
                                 body: JSON.stringify({ name: name, familyName: familyName, count: count, attending: attending })
                             })
                             .then(function(res) {
-                                if (!res.ok) throw new Error('network');
-                                return res.json();
+                                return res.json().then(function(data) {
+                                    return { status: res.status, ok: res.ok, data: data };
+                                });
                             })
-                            .then(function() {
+                            .then(function(result) {
+                                // Server says this device or this guest name already
+                                // submitted an RSVP before — treat it as success and
+                                // lock the form, same as a fresh successful submit.
+                                if (result.status === 409 && result.data && result.data.alreadySubmitted) {
+                                    markSubmitted();
+                                    submitBtn.disabled = false;
+                                    submitBtn.textContent = 'إرسال';
+                                    form.style.display = 'none';
+                                    if (successBox) successBox.classList.add('show');
+                                    return;
+                                }
+
+                                if (!result.ok) throw new Error('network');
+
+                                markSubmitted();
                                 form.reset();
                                 submitBtn.disabled = false;
                                 submitBtn.textContent = 'إرسال';
